@@ -1,0 +1,146 @@
+
+# Configure a default setup of Home Assistant (frontend, api, etc)
+default_config:
+
+# Uncomment this if you are using SSL/TLS, running in Docker container, etc.
+# http:
+#   base_url: example.duckdns.org:8123
+
+# Text to speech
+tts:
+  - platform: google_translate
+
+group: !include groups.yaml
+automation: !include automations.yaml
+script: !include scripts.yaml
+
+climate:
+  - platform: mqtt
+    name: "보일러"
+    mode_state_topic: "kocom/Thermo1/power/state"
+    mode_command_topic: "kocom/Thermo1/power/command"
+    temperature_state_topic: "kocom/Thermo1/setTemp/state"
+    temperature_command_topic: "kocom/Thermo1/setTemp/command"
+    current_temperature_topic: "kocom/Thermo1/curTemp/state"
+    away_mode_command_topic: "kocom/Thermo1/away/command"
+    away_mode_state_topic: "kocom/Thermo1/away/state"
+    modes:
+      - "off"
+      - "heat"
+    min_temp: 5
+    max_temp: 35
+
+light:
+  - platform: mqtt
+    name: "거실등"
+    state_topic: "kocom/Light1/power1/state"
+    command_topic: "kocom/Light1/power1/command"
+
+fan:
+  # Xiaomi Air Purifier 2S
+  - platform: xiaomi_miio
+    host: 192.168.0.5
+    token: 4cdf???????????
+    name: "공기청정기"    
+
+switch:
+  - platform: mqtt
+    name: "일괄소등"
+    icon: mdi:light-switch
+    state_topic: "kocom/Light/power/state"
+    command_topic: "kocom/Light/power/command"
+
+  - platform: mqtt
+    name: "엘리베이터"
+    icon: mdi:elevator
+    state_topic: "kocom/Elevator/power/state"
+    command_topic: "kocom/Elevator/power/command"
+
+  - platform: template
+    switches:
+      xiaomi_airpurifier_led:
+        friendly_name: "LED"
+        value_template: "{{ is_state_attr('fan.xiaomi_air_purifier_2s', 'led', true) }}"
+        turn_on:
+          service: fan.xiaomi_miio_set_led_on
+          data:
+            entity_id: fan.xiaomi_air_purifier_2s
+        turn_off:
+          service: fan.xiaomi_miio_set_led_off
+          data:
+            entity_id: fan.xiaomi_air_purifier_2s
+        icon_template: "mdi:lightbulb-outline"
+      xiaomi_airpurifier_child_lock:
+        friendly_name: "잠금"
+        value_template: "{{ is_state_attr('fan.xiaomi_air_purifier_2s', 'child_lock', true) }}"
+        turn_on:
+          service: fan.xiaomi_miio_set_child_lock_on
+          data:
+            entity_id: fan.xiaomi_air_purifier_2s
+        turn_off:
+          service: fan.xiaomi_miio_set_child_lock_off
+          data:
+            entity_id: fan.xiaomi_air_purifier_2s
+        icon_template: "mdi:lock-outline"
+      xiaomi_airpurifier_buzzer:
+        friendly_name: "부저"
+        value_template: "{{ is_state_attr('fan.xiaomi_air_purifier_2s', 'buzzer', true) }}"
+        turn_on:
+          service: fan.xiaomi_miio_set_buzzer_on
+          data:
+            entity_id: fan.xiaomi_air_purifier_2s
+        turn_off:
+          service: fan.xiaomi_miio_set_buzzer_off
+          data:
+            entity_id: fan.xiaomi_air_purifier_2s
+        icon_template: "mdi:volume-high"
+
+sensor:
+  # Xiaomi Air Purifier 2S
+  - platform: template
+    sensors:
+      xiaomi_airpurifier_temp:
+        friendly_name: "온도"
+        value_template: "{{ state_attr('fan.xiaomi_air_purifier_2s', 'temperature') }}"
+        unit_of_measurement: "°C"
+        device_class: "temperature"
+      xiaomi_airpurifier_humidity:
+        friendly_name: "습도"
+        value_template: "{{ state_attr('fan.xiaomi_air_purifier_2s', 'humidity') }}"
+        unit_of_measurement: "%"
+        device_class: "humidity"
+      xiaomi_airpurifier_air_quality_pm25:
+        friendly_name: "공기질(PM2.5)"
+        value_template: "{{ state_attr('fan.xiaomi_air_purifier_2s', 'aqi') }}"
+        unit_of_measurement: "μg/m³"
+        icon_template: "mdi:weather-fog"
+      xiaomi_airpurifier_speed:
+        friendly_name: "팬속도"
+        value_template: "{{ state_attr('fan.xiaomi_air_purifier_2s', 'motor_speed') }}"
+        unit_of_measurement: "rpm"
+        icon_template: "mdi:speedometer"
+      xiaomi_airpurifier_filter_remaining:
+        friendly_name: "필터잔량"
+        value_template: "{{ state_attr('fan.xiaomi_air_purifier_2s', 'filter_life_remaining') }}"
+        unit_of_measurement: "%"
+        icon_template: "mdi:heart-outline"
+
+input_select:
+  # Xiaomi Air Purifier 2S
+  xiaomi_airpurifier_mode:
+    name: Mode
+    options:
+      - Auto
+      - Silent
+      - Favorite
+    icon: "mdi:animation-outline"
+
+input_number:
+  # Xiaomi Air Purifier 2S
+  xiaomi_airpurifier_favorite_level:
+    name: "속도조절"
+    initial: 0
+    min: 0
+    max: 14
+    step: 1
+    icon: "mdi:weather-windy"
