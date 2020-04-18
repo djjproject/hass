@@ -3,8 +3,8 @@
 default_config:
 
 # Uncomment this if you are using SSL/TLS, running in Docker container, etc.
-# http:
-#   base_url: example.duckdns.org:8123
+http:
+   base_url: iot.domain.com
 
 # Text to speech
 tts:
@@ -40,7 +40,7 @@ fan:
   # Xiaomi Air Purifier 2S
   - platform: xiaomi_miio
     host: 192.168.0.5
-    token: 4cdf???????????
+    token: 4cdf???????
     name: "공기청정기"    
 
 switch:
@@ -55,6 +55,18 @@ switch:
     icon: mdi:elevator
     state_topic: "kocom/Elevator/power/state"
     command_topic: "kocom/Elevator/power/command"
+
+  - platform: mqtt
+    name: "콘센트1"
+    icon: mdi:power
+    state_topic: "kocom/Outlet1/power1/state"
+    command_topic: "kocom/Outlet1/power1/command"
+
+  - platform: mqtt
+    name: "콘센트2"
+    icon: mdi:power
+    state_topic: "kocom/Outlet1/power2/state"
+    command_topic: "kocom/Outlet1/power2/command"
 
   - platform: template
     switches:
@@ -124,6 +136,20 @@ sensor:
         value_template: "{{ state_attr('fan.xiaomi_air_purifier_2s', 'filter_life_remaining') }}"
         unit_of_measurement: "%"
         icon_template: "mdi:heart-outline"
+
+  - platform: systemmonitor
+    resources:
+      - type: last_boot
+      - type: processor_use
+      - type: memory_free
+      - type: throughput_network_in
+        arg: eth0
+      - type: throughput_network_out
+        arg: eth0
+      - type: disk_use_percent
+        arg: /
+      - type: disk_use_percent
+        arg: /media
 
 input_select:
   # Xiaomi Air Purifier 2S
