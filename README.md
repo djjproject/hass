@@ -29,7 +29,9 @@
 1. [kocom_rs485] add power outlet control, realtime state check through rs485 ack data.
 2. [HA] add power outlet control, add server resource info.
 
+> 20200419
 
+1. fix XiaoMi MiAir2S set speed on Favorite Mode.
 
 # SCREENSHOTS
 
