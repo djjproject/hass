@@ -16,13 +16,13 @@
     service: input_select.select_option
     entity_id: input_select.xiaomi_airpurifier_mode
     data_template:
-      option: '{{ states.fan.xiaomi_miio_device.attributes.speed }}'
+      option: '{{ states.fan.xiaomi_air_purifier_2s.attributes.speed }}'
 - alias: Air Purifier favorite level change
   trigger:
     entity_id: input_number.xiaomi_airpurifier_favorite_level
     platform: state
   action:
-    service: xiaomi_miio.fan_set_favorite_level
+    service: fan.xiaomi_miio_set_favorite_level
     data_template:
       entity_id: fan.xiaomi_air_purifier_2s
       level: '{{ states.input_number.xiaomi_airpurifier_favorite_level.state | int }}'
@@ -34,4 +34,4 @@
     service: input_number.set_value
     entity_id: input_number.xiaomi_airpurifier_favorite_level
     data_template:
-      value: '{{ states.fan.xiaomi_miio_device.attributes.favorite_level }}'
+      value: '{{ states.fan.xiaomi_air_purifier_2s.attributes.favorite_level }}'
