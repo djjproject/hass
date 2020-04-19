@@ -19,7 +19,7 @@
 
 # HISTORY
 
-> 200417
+> 20200417
 
 1. first backup
 2. [kocom_rs485] add socket option, fix setTemp error.
@@ -36,3 +36,5 @@
 # SCREENSHOTS
 
 ![Alt text](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=http%3A%2F%2Fcfile23.uf.tistory.com%2Fimage%2F99C8D0425E9AAF1927526B)
+
+![Alt text](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=http%3A%2F%2Fcfile2.uf.tistory.com%2Fimage%2F995B154F5E9C5FA0268DCE)
